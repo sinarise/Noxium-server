@@ -17,34 +17,34 @@ app.get('/', (req, res) => {
 
 // Rota de status
 app.get('/api/status', (req, res) => {
-  res.json({ status: 'Servidor operacional', carregado: true });
+  res.json({ status: 'Servidor operacional', timestamp: new Date() });
 });
 
 // Rota de consulta básica
 app.post('/api/consulta', (req, res) => {
-  const { tipo, valentia } = req.body;
+  const { tipo, valor } = req.body;
 
-  if (!tipo || !valentia) {
-    return res.status(400).json({ erro: 'Tipo e Valentia são obrigatórios' });
+  if (!tipo || !valor) {
+    return res.status(400).json({ erro: 'Tipo e valor são obrigatórios' });
   }
 
   // Simulando resposta
   let resposta = {};
 
   if (tipo === 'cnpj') {
-    resposta = {
-      nome: 'Empresa Exemplo Ltda',
-      cnpj: valentia,
-      status: 'Ativa',
-    };
+    resposta = { empresa: 'Empresa Exemplo', cnpj: valor, situacao: 'Ativa' };
+  } else if (tipo === 'placa') {
+    resposta = { veiculo: 'Fiat Uno', placa: valor, situacao: 'Licenciado' };
+  } else if (tipo === 'ip') {
+    resposta = { ip: valor, cidade: 'São Paulo', pais: 'Brasil' };
   } else {
-    resposta = { erro: 'Tipo de consulta inválido' };
+    return res.status(400).json({ erro: 'Tipo inválido de consulta' });
   }
 
-  res.json(resposta);
+  res.json({ resultado: resposta });
 });
 
-// Iniciar servidor
+// Inicia o servidor
 app.listen(port, () => {
-  console.log(`Servidor rodando na porta ${port}`);
+  console.log(`Servidor iniciado na porta ${port}`);
 });
